@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "target": "es2016", 
+    "outDir": "built",
+    "module": "ES6",            
+    "forceConsistentCasingInFileNames": true,
+    "paths": {
+      "@trawby/canvas-demo": ["../canvas-demo/mod.ts"]
+    },
+    "strict": true,   
+    "strictNullChecks": true,  
+    "skipLibCheck": true 
+  }
+}
