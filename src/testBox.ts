@@ -1,5 +1,5 @@
 import { AnimObject, AnimUtil, createKeyframes } from "@trawby/canvas-demo";
-import Color from "./color.ts";
+import { Color } from "@trawby/canvas-demo";
 import { States } from "./mod.ts";
 
 export default class TestBox implements AnimObject {
@@ -20,14 +20,19 @@ export default class TestBox implements AnimObject {
     draw(ctx: CanvasRenderingContext2D): void {
         ctx.beginPath();
         ctx.rect(this.x, this.y, this.width, this.height);
-        ctx.fillStyle = this.fillColor.getColorString();
+        ctx.fillStyle = this.fillColor.toHexString();
         ctx.fill();
     }
 }
 
 export async function moveBox(box: TestBox, animUtil: AnimUtil<States>): Promise<void> {
-    const keyframes = createKeyframes(20, 90, 50);
-    await animUtil.interp(keyframes, 5000, (value: number) => {
-        box.x = value;
+    /* const keyframes = createKeyframes(20, 90, 50);
+    const promise1 = animUtil.interp(keyframes, 5000, (value: number) => {
+        //box.x = value;
+    }); */
+
+    const zoomKeyframes = createKeyframes(1, 0.20);
+    const promise2 = animUtil.interp(zoomKeyframes, 3000, (value: number) => {
+        //animUtil.setZoomPoint(value, 10, 10);
     });
 }
