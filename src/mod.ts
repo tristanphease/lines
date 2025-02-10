@@ -1,14 +1,18 @@
-import { createAnim, AnimStateBuilder } from "@trawby/canvas-demo";
+import { createAnim, AnimStateBuilder, StateEventEnum } from "@trawby/canvas-demo";
 import { AnimObjectInfo } from "@trawby/canvas-demo";
 import { PixelGrid } from "@trawby/canvas-demo";
 import { createBresenhamAnim } from "./bresenhamAnim.ts";
 import TestBox, { moveBox } from "./testBox.ts";
 import { colorFromHex } from "@trawby/canvas-demo";
+import { setupButtons } from "./setupButtons.ts";
+import AnimManager from "../../canvas-demo/lib/animManager.ts";
 
 export enum States {
     Start = 0,
     BoxState = 1,
 }
+
+let animManager: AnimManager<States> | null = null;
 
 function start(canvasId: string) {
 
@@ -23,20 +27,30 @@ function start(canvasId: string) {
     // testBoxAnim.withAnim(moveBox);
 
     const startStateAnims = new AnimStateBuilder<States>(States.Start);
+    startStateAnims.addAnim(pixelGridAnim);
+    startStateAnims.addEventListener(StateEventEnum.AnimsCompleted, (animUtil) => {
+        animUtil.setState(States.BoxState);
+    });
 
-    startStateAnims.addAnim(pixelGridAnim)
-        .addAnim(testBoxAnim);
+    const boxStateAnims = new AnimStateBuilder<States>(States.BoxState);
+    boxStateAnims.addAnim(testBoxAnim);
 
     const builder = createAnim(canvasId)
         .withState<States>(States.Start)
         .withDimensions(1000, 800)
-        .addStateAnims(startStateAnims);
+        .addStateAnims(startStateAnims)
+        .addStateAnims(boxStateAnims);
         
-    const animManager = builder.build();
+    animManager = builder.build();
     animManager.start();
 
     // animObject.run();
 }
 
+export function changeState() {
+    animManager?.setState(States.BoxState);
+}
+
+setupButtons();
 start("canvas");
 

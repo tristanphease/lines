@@ -112,7 +112,7 @@
   },
   "workspace": {
     "dependencies": [
-      "jsr:@trawby/canvas-demo@^0.0.4"
+      "jsr:@trawby/canvas-demo@^0.0.5"
     ]
   }
 }

@@ -1,6 +1,6 @@
 {
     "imports": {
-        "@trawby/canvas-demo": "jsr:@trawby/canvas-demo@^0.0.4"
+        "@trawby/canvas-demo": "jsr:@trawby/canvas-demo@^0.0.5"
     },
     "tasks": {
         "build": "deno run -A npm:esbuild src/mod.ts --bundle --outdir=dist --minify",
