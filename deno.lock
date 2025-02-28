@@ -1,7 +1,13 @@
 {
   "version": "4",
   "specifiers": {
+    "jsr:@trawby/trawby@0.0.8": "0.0.8",
     "npm:esbuild@*": "0.24.2"
+  },
+  "jsr": {
+    "@trawby/trawby@0.0.8": {
+      "integrity": "4e4654b99ef304af805122cda259466f4efd47a305378fb40b6d485aa12e2b66"
+    }
   },
   "npm": {
     "@esbuild/aix-ppc64@0.24.2": {
@@ -112,7 +118,7 @@
   },
   "workspace": {
     "dependencies": [
-      "jsr:@trawby/canvas-demo@^0.0.5"
+      "jsr:@trawby/trawby@0.0.8"
     ]
   }
 }

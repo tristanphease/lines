@@ -2,12 +2,31 @@
 <html>
 <head>
 
+    <style>
+
+        #line-title {
+            font-family: 'Courier New', Courier, monospace;
+        }
+
+        #explain-text {
+            font-family: Verdana, Geneva, Tahoma, sans-serif;
+            font-size: 20px;
+            width: 600px; 
+        }
+
+        #canvas {
+            width: 600px; 
+            height: 400px;
+            border: 2px solid black;
+        }
+    </style>
+
 </head>
 <body>
-    <canvas id="canvas" style="width: 1000px; height: 800px;"></canvas>
+    <h1 id="line-title">How to draw a line</h1>
+    <div id="explain-text"></div>
+    <canvas id="canvas"></canvas>
 
-    <button id="buttonOne">Button One</button>
-    
     <script src="./dist/mod.js"></script>
 
 </body>

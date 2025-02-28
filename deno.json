@@ -1,6 +1,6 @@
 {
     "imports": {
-        "@trawby/canvas-demo": "jsr:@trawby/canvas-demo@^0.0.5"
+        "@trawby/trawby": "jsr:@trawby/trawby@0.0.8"
     },
     "tasks": {
         "build": "deno run -A npm:esbuild src/mod.ts --bundle --outdir=dist --minify",
@@ -11,5 +11,8 @@
             "dom",
             "deno.window"
         ]
+    },
+    "fmt": {
+        "indentWidth": 4
     }
 }
