@@ -1,10 +1,13 @@
 {
     "imports": {
-        "@trawby/trawby": "jsr:@trawby/trawby@0.0.8"
+        "@luca/esbuild-deno-loader": "jsr:@luca/esbuild-deno-loader@^0.11.1",
+        "@trawby/trawby": "../trawby/mod.ts",
+        "@trawby/html-tree": "../html-tree/mod.ts",
+        "esbuild": "npm:esbuild@0.20.2"
     },
     "tasks": {
-        "build": "deno run -A npm:esbuild src/mod.ts --bundle --outdir=dist --minify",
-        "dev": "deno run -A npm:esbuild src/mod.ts --bundle --outdir=dist --sourcemap --watch --servedir=./"
+        "build": "deno run -A build.ts",
+        "dev": "deno run -A dev.ts"
     },
     "compilerOptions": {
         "lib": [

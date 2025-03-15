@@ -1,9 +1,23 @@
 import { PixelGrid } from "@trawby/trawby";
 import Color from "../../../trawby/lib/util/color.ts";
 
-interface Point {
+export interface Point {
     x: number,
     y: number,
+}
+
+export function getRandomPointInSquare(x1: number, y1: number, x2: number, y2: number): Point {
+    const x = getRandomInt(x1, x2);
+    const y = getRandomInt(y1, y2);
+
+    return {
+        x,
+        y
+    };
+}
+
+function getRandomInt(min: number, max: number): number {
+    return Math.floor(Math.random() * (max - min) + min);
 }
 
 type onChangeFunction = (pointAdded: Point, error: number) => Promise<void>;
@@ -37,14 +51,14 @@ export async function bresenhamAnim(pixelGrid: PixelGrid, point1: Point, point2:
     let currentMain = point1[mainAxis];
     let currentSub = point1[subAxis];
     const deltaAmount = deltaSub / deltaMain;
-    let error = deltaAmount - 1;
+    let error = 0;
 
     while ((mainSign === 1 && currentMain <= point2[mainAxis]) || (mainSign === -1 && currentMain >= point2[mainAxis])) {
         const xValue = mainAxis === "x" ? currentMain : currentSub;
         const yValue = mainAxis === "y" ? currentMain : currentSub;
         pixelGrid.setPixel(xValue, yValue, Color.BLACK);
 
-        if (error >= 0) {
+        if (error >= 0.5) {
             currentSub += subSign;
             error -= 1;
         }

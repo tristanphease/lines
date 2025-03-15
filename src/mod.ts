@@ -1,17 +1,25 @@
-import { AnimManager, createAnim } from "@trawby/trawby";
+import { AnimManager, AnimMode, AnimModeEnum, AnimRunEvent, createAnim } from "@trawby/trawby";
 import { PixelGrid } from "@trawby/trawby";
 import { colorFromHex } from "@trawby/trawby";
 import { constructBresenhamAnimationBuilder } from "./bresenhamAnim/mod.ts";
+import { setupInput } from "./input.ts";
+import { loadAnimTree, startNodeEventFunction, endNodeEventFunction, continueInteractiveAnim } from "./animTree.ts";
 
-export enum States {
-    Bresenham,
-    BoxState = 1,
-}
+export const States = {
+    Bresenham: "bresenham",
+    BoxState: "boxState",
+} as const;
 
-let animManager: AnimManager<States> | null = null;
+export const CANVAS_ID: string = "canvas";
 
-function start(canvasId: string) {
+let animManager: AnimManager | null = null;
+export let currentAnimMode: AnimModeEnum = AnimMode.Automatic;
 
+export const CANVAS_WIDTH: number = 600;
+export const CANVAS_HEIGHT: number = 400;
+
+export const startManager = function(canvasId: string) {
+    setupInput();
 
     const pixelGrid = new PixelGrid(0, 0, 600, 400, {
         defaultColor: colorFromHex("#000000")!,
@@ -19,19 +27,39 @@ function start(canvasId: string) {
     });
 
     const mainBuilder = createAnim()
-        .withState(States.Bresenham)
-        .withDimensions(600, 400)
+        .withDimensions(CANVAS_WIDTH, CANVAS_HEIGHT)
         .addAnimRunToState(States.Bresenham, constructBresenhamAnimationBuilder(pixelGrid));
         
-    animManager = mainBuilder.build(canvasId);
-    animManager.start();
+    return function(animMode: AnimModeEnum) {
+        currentAnimMode = animMode;
+        mainBuilder.setAnimMode(animMode);
+        mainBuilder.addEventListenerAll(AnimRunEvent.OnStart, startNodeEventFunction);
+        mainBuilder.addEventListenerAll(AnimRunEvent.OnEnd, endNodeEventFunction);
+        animManager = mainBuilder.build(canvasId);
+        loadAnimTree(animManager);
+        animManager.start();
 
-    // animObject.run();
+        
+    };
+}(CANVAS_ID);
+
+export function setSpeed(speed: number) {
+    animManager?.setSpeed(speed);
+}
+
+export function togglePlay(): boolean {
+    const interactiveContinue = continueInteractiveAnim();
+    if (interactiveContinue) {
+        return false;
+    }
+    if (animManager) {
+        return animManager.togglePause();
+    }
+    
+    return true;
 }
 
 export function changeState() {
     animManager?.setState(States.BoxState);
 }
-
-start("canvas");
 

@@ -1,22 +1,23 @@
-import { createAnim, AnimObjectInfo, PixelGrid, AnimStateBuilder, AnimBuilderWithState, createAnimForState } from "@trawby/trawby";
-import { initialGrid, pixelStart } from "./gridFunctions.ts";
+import { createAnim, AnimObjectInfo, PixelGrid, AnimStateBuilder, createAnimForState, AnimBuilder } from "@trawby/trawby";
+import { customLineAnim, initialGrid, pixelStart } from "./gridFunctions.ts";
 import LineBundle from "../objects/lineBundle.ts";
 import { drawLinesAnimFunction } from "./miscLines.ts";
 import TextObject from "../objects/text.ts";
 import PixelCoords from "../objects/pixelCoords.ts";
 
-export enum BresenhamStates {
+export const BresenhamStates = {
     /** Setup pixel grid, draw some lines */
-    Initial,
+    Initial: "Initial",
     /** Draw lines to show off */
-    DrawLine,
+    DrawLine: "Draw Line",
     /** Start bresenham anim with explanatory drawings */
-    StartBresenham,
-}
+    StartBresenham: "Start Bresenham",
 
-export function constructBresenhamAnimationBuilder(pixelGrid: PixelGrid): AnimBuilderWithState<BresenhamStates> {
+    CustomLine: "Custom Line",
+} as const;
+
+export function constructBresenhamAnimationBuilder(pixelGrid: PixelGrid): AnimBuilder {
     return createAnim()
-        .withState(BresenhamStates.Initial)
         .addAnimRunToState(
             BresenhamStates.Initial,
             constructInitialStateAnims(pixelGrid)
@@ -28,33 +29,44 @@ export function constructBresenhamAnimationBuilder(pixelGrid: PixelGrid): AnimBu
         .addAnimRunToState(
             BresenhamStates.StartBresenham,
             constructStartBresenhamAnim(pixelGrid)
+        )
+        .addAnimRunToState(
+            BresenhamStates.CustomLine,
+            constructCustomLineBresenhamAnim(pixelGrid)
         );
 }
 
-function constructInitialStateAnims(pixelGrid: PixelGrid): AnimStateBuilder<BresenhamStates> {
-    return createAnimForState<BresenhamStates>()
-        .addAnim<PixelGrid[]>(
-            new AnimObjectInfo<BresenhamStates, PixelGrid[]>(pixelGrid)
+function constructInitialStateAnims(pixelGrid: PixelGrid): AnimStateBuilder {
+    return createAnimForState()
+        .addAnim(
+            new AnimObjectInfo(pixelGrid)
                 .withAnim(initialGrid)
         );
 }
 
-function constructDrawLinesAnim(): AnimStateBuilder<BresenhamStates> {
-    const drawLinesAnim = new AnimStateBuilder<BresenhamStates>();
-    drawLinesAnim.addAnim<LineBundle[]>(
-        new AnimObjectInfo<BresenhamStates, LineBundle[]>(new LineBundle())
+function constructDrawLinesAnim(): AnimStateBuilder {
+    const drawLinesAnim = new AnimStateBuilder();
+    drawLinesAnim.addAnim(
+        new AnimObjectInfo(new LineBundle())
             .withAnim(drawLinesAnimFunction)
     );
 
     return drawLinesAnim;
 }
 
-function constructStartBresenhamAnim(pixelGrid: PixelGrid): AnimStateBuilder<BresenhamStates> {
-    const pixelDrawAnim = new AnimStateBuilder<BresenhamStates>();
-    pixelDrawAnim.addAnim<[PixelGrid, TextObject, PixelCoords]>(
-        new AnimObjectInfo<BresenhamStates, [PixelGrid, TextObject, PixelCoords]>(pixelGrid, new TextObject(), new PixelCoords(pixelGrid))
+function constructStartBresenhamAnim(pixelGrid: PixelGrid): AnimStateBuilder {
+    const pixelDrawAnim = new AnimStateBuilder();
+    pixelDrawAnim.addAnim(
+        new AnimObjectInfo(pixelGrid, new TextObject(), new PixelCoords(pixelGrid))
             .withAnim(pixelStart)
     );
 
     return pixelDrawAnim;
+}
+
+function constructCustomLineBresenhamAnim(pixelGrid: PixelGrid): AnimStateBuilder {
+    const customLineAnimBuilder = new AnimStateBuilder();
+    customLineAnimBuilder.addAnim(new AnimObjectInfo(pixelGrid, new PixelCoords(pixelGrid)).withAnim(customLineAnim));
+
+    return customLineAnimBuilder;
 }

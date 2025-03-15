@@ -1,12 +1,11 @@
 import { AnimFunction, AnimUtil, createKeyframes } from "@trawby/trawby";
 import LineBundle, { createHorizontalLine, createLine, createVerticalLine } from "../objects/lineBundle.ts";
-import { BresenhamStates } from "./mod.ts";
 import { setExplainText } from "../explainText.ts";
 
 const LINE_TEXT: string = "We can draw vertical or horizontal lines easily one pixel at a time";
 const LINE_TEXT_2: string = "<br />but lines on an angle are more difficult";
 
-export const drawLinesAnimFunction: AnimFunction<BresenhamStates, LineBundle[]> = async function(animUtil: AnimUtil<BresenhamStates>, lineBundle: LineBundle) {
+export const drawLinesAnimFunction: AnimFunction<LineBundle[]> = async function(animUtil: AnimUtil, lineBundle: LineBundle) {
     setExplainText(LINE_TEXT);
     
     animUtil.setZoomPoint(4, 0, 0);
