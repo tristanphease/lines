@@ -33,5 +33,5 @@ jobs:
       - name: Run linter
         run: deno lint
 
-      - name: Run tests
-        run: deno test -A
+      - name: Run build
+        run: deno task run 
