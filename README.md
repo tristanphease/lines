@@ -12,7 +12,7 @@ https://github.com/tristanphease/trawby
 https://jsr.io/@trawby/trawby
 
 to build:
-deno task run
+deno task build
 
 to run in dev:
 deno task dev
