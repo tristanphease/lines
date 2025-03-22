@@ -1,5 +1,4 @@
-import { PixelGrid } from "@trawby/trawby";
-import Color from "../../../trawby/lib/util/color.ts";
+import { Color, PixelGrid } from "@trawby/trawby";
 import { Point } from "../util/point.ts";
 
 

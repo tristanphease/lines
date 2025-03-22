@@ -1,5 +1,4 @@
-import { AnimUtil, PixelGrid } from "@trawby/trawby";
-import Color from "../../../trawby/lib/util/color.ts";
+import { AnimUtil, Color, PixelGrid } from "@trawby/trawby";
 import { setExplainText } from "../explainText.ts";
 import TextObject from "../objects/text.ts";
 import PixelCoords from "../objects/pixelCoords.ts";
