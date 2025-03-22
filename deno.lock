@@ -6,7 +6,7 @@
     "jsr:@std/encoding@^1.0.5": "1.0.7",
     "jsr:@std/path@^1.0.6": "1.0.8",
     "jsr:@trawby/html-tree@^0.0.1": "0.0.1",
-    "jsr:@trawby/trawby@^0.0.9": "0.0.9",
+    "jsr:@trawby/trawby@0.1": "0.1.0",
     "npm:esbuild@*": "0.24.2",
     "npm:esbuild@0.20.2": "0.20.2"
   },
@@ -31,8 +31,8 @@
     "@trawby/html-tree@0.0.1": {
       "integrity": "6ab55542152f98e5ce15beb4c44202785e976de551f1b253256e977ae109a77e"
     },
-    "@trawby/trawby@0.0.9": {
-      "integrity": "e0cf9970a563dd5e7475816b8521e70a808672d9ae4c287ba1a32be4c1f6d23a",
+    "@trawby/trawby@0.1.0": {
+      "integrity": "63dbae041dae4ef480e19598ca7e220ceccdab9ebc8510b4b116e09592865be4",
       "dependencies": [
         "jsr:@trawby/html-tree"
       ]
@@ -246,7 +246,7 @@
     "dependencies": [
       "jsr:@luca/esbuild-deno-loader@~0.11.1",
       "jsr:@trawby/html-tree@^0.0.1",
-      "jsr:@trawby/trawby@^0.0.9",
+      "jsr:@trawby/trawby@0.1",
       "npm:esbuild@0.20.2"
     ]
   }

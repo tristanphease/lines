@@ -1,5 +1,5 @@
-import * as esbuild from "npm:esbuild@0.20.2";
-import { denoPlugins } from "jsr:@luca/esbuild-deno-loader@^0.11.1";
+import * as esbuild from "esbuild";
+import { denoPlugins } from "@luca/esbuild-deno-loader";
 
 const PORT: number = 8000;
 
@@ -7,6 +7,7 @@ const ctx = await esbuild.context({
     plugins: [...denoPlugins()],
     entryPoints: ["./src/mod.ts"],
     outfile: "./dist/mod.js",
+    sourcemap: true,
     bundle: true,
     format: "esm",
 });

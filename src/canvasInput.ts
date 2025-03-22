@@ -1,5 +1,5 @@
-import { Point } from "./bresenhamAnim/bresenham.ts";
 import { CANVAS_ID } from "./mod.ts";
+import { Point } from "./util/point.ts";
 
 export function waitForPointOnCanvas(): Promise<Point> {
     const canvasElement = document.getElementById(CANVAS_ID)!;

@@ -8,7 +8,7 @@ const ANIM_TREE_WRAPPER_ID: string = "anim-tree-wrapper";
 const HTML_NODE_CLASS_NAME: string = "animTreeNode";
 
 let htmlTree: HtmlTree<AnimRun> | undefined;
-let currentManager: AnimManager | undefined;
+const managerStack: Array<AnimManager> = [];
 let waitingInteractive: boolean = false;
 
 export function loadAnimTree(animManager: AnimManager) {
@@ -29,8 +29,7 @@ export function startNodeEventFunction(_animUtil: AnimUtil, node: AnimRun) {
     const htmlElement = htmlTree?.findHtmlByNode(node);
     switch (node.animRunType) {
         case AnimRunType.AnimManager:
-            currentManager = node;
-            console.log(currentManager);
+            managerStack.push(node);
             break;
         case AnimRunType.StateAnims:
             updateAnimRunButton(true);
@@ -47,17 +46,32 @@ export function endNodeEventFunction(_animUtil: AnimUtil, node: AnimRun) {
     }
 
     if (currentAnimMode === AnimMode.Interactive) {
-        // set to wait for next input
-        updateAnimRunButton(false);
         waitingInteractive = true;
-        setPlayPauseButtonIcon(true);
+        if (node.animRunType === AnimRunType.AnimManager) {
+            // remove manager from stack
+            managerStack.pop();
+            // move to start the next state on the upper manager so that we don't have to press the button twice
+            const lastIndex = managerStack.length - 1;
+            if (lastIndex > -1) {
+                managerStack[lastIndex].nextState();
+            }
+            
+        } else  {
+            // set to wait for next input
+            updateAnimRunButton(false);
+            setPlayPauseButtonIcon(true);
+        }
     }
 }
 
 export function continueInteractiveAnim(): boolean {
     if (currentAnimMode === AnimMode.Interactive && waitingInteractive) {
-        currentManager?.nextState();
         waitingInteractive = false;
+        const lastIndex = managerStack.length - 1;
+        if (lastIndex > -1) {
+            managerStack[lastIndex].nextState();
+            setPlayPauseButtonIcon(false);
+        }
         return true;
     }
     return false;

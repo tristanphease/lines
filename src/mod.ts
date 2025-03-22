@@ -4,10 +4,13 @@ import { colorFromHex } from "@trawby/trawby";
 import { constructBresenhamAnimationBuilder } from "./bresenhamAnim/mod.ts";
 import { setupInput } from "./input.ts";
 import { loadAnimTree, startNodeEventFunction, endNodeEventFunction, continueInteractiveAnim } from "./animTree.ts";
+import { constructThickLineAnimBuilder } from "./thickLineAnim/mod.ts";
+import { constructAntialiasLineBuilder } from "./antialiasLineAnim/mod.ts";
 
 export const States = {
-    Bresenham: "bresenham",
-    BoxState: "boxState",
+    Bresenham: "Bresenham Line",
+    ThickLine: "Thick Line",
+    AntiAliasLine: "Antialiased Line"
 } as const;
 
 export const CANVAS_ID: string = "canvas";
@@ -28,7 +31,9 @@ export const startManager = function(canvasId: string) {
 
     const mainBuilder = createAnim()
         .withDimensions(CANVAS_WIDTH, CANVAS_HEIGHT)
-        .addAnimRunToState(States.Bresenham, constructBresenhamAnimationBuilder(pixelGrid));
+        .addAnimRunToState(States.Bresenham, constructBresenhamAnimationBuilder(pixelGrid))
+        .addAnimRunToState(States.ThickLine, constructThickLineAnimBuilder(pixelGrid))
+        .addAnimRunToState(States.AntiAliasLine, constructAntialiasLineBuilder(pixelGrid));
         
     return function(animMode: AnimModeEnum) {
         currentAnimMode = animMode;
@@ -57,9 +62,5 @@ export function togglePlay(): boolean {
     }
     
     return true;
-}
-
-export function changeState() {
-    animManager?.setState(States.BoxState);
 }
 

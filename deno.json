@@ -1,7 +1,7 @@
 {
     "imports": {
         "@luca/esbuild-deno-loader": "jsr:@luca/esbuild-deno-loader@^0.11.1",
-        "@trawby/trawby": "jsr:@trawby/trawby@^0.0.9",
+        "@trawby/trawby": "jsr:@trawby/trawby@^0.1",
         "@trawby/html-tree": "jsr:@trawby/html-tree@^0.0.1",
         "esbuild": "npm:esbuild@0.20.2"
     },

@@ -1,16 +1,16 @@
-import { AnimFunction, AnimMode, AnimUtil, PixelGrid } from "@trawby/trawby";
+import { AnimUtil, PixelGrid } from "@trawby/trawby";
 import Color from "../../../trawby/lib/util/color.ts";
 import { setExplainText } from "../explainText.ts";
 import TextObject from "../objects/text.ts";
-import PixelCoords, { PixelCoord } from "../objects/pixelCoords.ts";
-import { bresenhamAnim, getRandomPointInSquare, Point } from "./bresenham.ts";
-import { CANVAS_HEIGHT, CANVAS_WIDTH, currentAnimMode } from "../mod.ts";
-import { waitForPointOnCanvas } from "../canvasInput.ts";
+import PixelCoords from "../objects/pixelCoords.ts";
+import { bresenhamAnim } from "./bresenham.ts";
+import { Point } from "../util/point.ts";
+import { getTwoPoints } from "../util/helpers.ts";
 
 const INITIAL_EXPLAIN_TEXT: string = "Welcome to a simple animation explaining how to draw a line using a neat little animation library I created.";
 
 /** Sets up the initial grid with some fun anims */
-export const initialGrid: AnimFunction<PixelGrid[]> = async function(animUtil: AnimUtil, pixelGrid: PixelGrid): Promise<void> {
+export const initialGrid = async function(animUtil: AnimUtil, pixelGrid: PixelGrid): Promise<void> {
     
     animUtil.setZoomPoint(2, 0, 0);
 
@@ -50,7 +50,7 @@ const BRESENHAM_INIT_1: string = "The main concept behind bresenham is to keep t
 const BRESENHAM_INIT_2: string = "As we move across the axis which is the longer one (x in this case) one pixel at a time, we calculate the error on each movement which is Δy/Δx." + 
     "Once this passes a threshold we change y to move towards the desired point"; 
 
-export const pixelStart: AnimFunction<[PixelGrid, TextObject, PixelCoords]> = async function name(
+export const pixelStart = async function name(
     animUtil: AnimUtil, pixelGrid: PixelGrid, textObject: TextObject, pixelCoords: PixelCoords
 ): Promise<void> {
     pixelGrid.clearAll(Color.WHITE);
@@ -76,51 +76,13 @@ export const pixelStart: AnimFunction<[PixelGrid, TextObject, PixelCoords]> = as
 
 }
 
-const INTERACTIVE_CUSTOM_LINE_TEXT: string = "Click on the canvas to draw a line";
-const AUTOMATIC_CUSTOM_LINE_TEXT: string = "Picking two random points";
-
-const getRandomPoint = function(): Point {
-    return getRandomPointInSquare(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
-}
-
 export const customLineAnim = async function(animUtil: AnimUtil, pixelGrid: PixelGrid, pixelCoords: PixelCoords) {
     animUtil.setZoomPoint(1, 0, 0);
     pixelGrid.clearAll(Color.WHITE);
     pixelCoords.fontSize = 12;
-    let point1: PixelCoord | null = null;
-    let point2: PixelCoord | null = null;
-    switch (currentAnimMode) {
-        case AnimMode.Automatic: {
-            setExplainText(AUTOMATIC_CUSTOM_LINE_TEXT);
-            await animUtil.waitTime(1000);
-            point1 = getRandomPoint();
-            pixelCoords.addPixelCoord(point1);
-            await animUtil.waitTime(1000);
-            point2 = getRandomPoint();
-            pixelCoords.addPixelCoord(point2);
-            await animUtil.waitTime(1000);
-            break;
-        }
-        case AnimMode.Interactive: {
-            setExplainText(INTERACTIVE_CUSTOM_LINE_TEXT);
-            point1 = await waitForPointOnCanvas();
-            pixelCoords.addPixelCoord(point1);
-            point2 = await waitForPointOnCanvas();
-            pixelCoords.addPixelCoord(point2);
-
-            break;
-        }
-    }
-
-    if (point1.y < point2.y) {
-        point2.below = true;
-    } else {
-        point1.below = true;
-    }
+    const [point1, point2] = await getTwoPoints(animUtil, pixelCoords);
 
     await bresenhamAnim(pixelGrid, point1, point2, async (_pointAdded: Point, _error: number) => {
         await animUtil.waitTime(50);
     });
-
-
 }

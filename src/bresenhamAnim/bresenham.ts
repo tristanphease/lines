@@ -1,10 +1,7 @@
 import { PixelGrid } from "@trawby/trawby";
 import Color from "../../../trawby/lib/util/color.ts";
+import { Point } from "../util/point.ts";
 
-export interface Point {
-    x: number,
-    y: number,
-}
 
 export function getRandomPointInSquare(x1: number, y1: number, x2: number, y2: number): Point {
     const x = getRandomInt(x1, x2);
@@ -35,6 +32,15 @@ type onChangeFunction = (pointAdded: Point, error: number) => Promise<void>;
  * @param onChangeFunction 
  */
 export async function bresenhamAnim(pixelGrid: PixelGrid, point1: Point, point2: Point, onChangeFunction: onChangeFunction): Promise<void> {
+    await bresenhamMove(point1, point2, async (point, error) => {
+        pixelGrid.setPixel(point.x, point.y, Color.BLACK);
+        await onChangeFunction(point, error);
+    });
+}
+
+type bresenhamCallbackFunction = (point: Point, error: number) => Promise<void>;
+
+export async function bresenhamMove(point1: Point, point2: Point, callback: bresenhamCallbackFunction) {
     const deltaXAbs = Math.abs(point2.x - point1.x);
     const deltaYAbs = Math.abs(point2.y - point1.y);
 
@@ -56,7 +62,6 @@ export async function bresenhamAnim(pixelGrid: PixelGrid, point1: Point, point2:
     while ((mainSign === 1 && currentMain <= point2[mainAxis]) || (mainSign === -1 && currentMain >= point2[mainAxis])) {
         const xValue = mainAxis === "x" ? currentMain : currentSub;
         const yValue = mainAxis === "y" ? currentMain : currentSub;
-        pixelGrid.setPixel(xValue, yValue, Color.BLACK);
 
         if (error >= 0.5) {
             currentSub += subSign;
@@ -66,8 +71,7 @@ export async function bresenhamAnim(pixelGrid: PixelGrid, point1: Point, point2:
         error += deltaAmount;
         currentMain += mainSign;
 
-        await onChangeFunction({ x: xValue, y: yValue }, error);
+        await callback({ x: xValue, y: yValue }, error);
     }
-
-}
+} 
 
