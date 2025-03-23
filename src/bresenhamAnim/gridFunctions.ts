@@ -1,10 +1,11 @@
-import { AnimUtil, Color, PixelGrid } from "@trawby/trawby";
+import { AnimMode, AnimUtil, Color, PixelGrid } from "@trawby/trawby";
 import { setExplainText } from "../explainText.ts";
 import TextObject from "../objects/text.ts";
 import PixelCoords from "../objects/pixelCoords.ts";
 import { bresenhamAnim } from "./bresenham.ts";
 import { Point } from "../util/point.ts";
 import { getTwoPoints } from "../util/helpers.ts";
+import { currentAnimMode } from "../mod.ts";
 
 const INITIAL_EXPLAIN_TEXT: string = "Welcome to a simple animation explaining how to draw a line using a neat little animation library I created.";
 
@@ -29,7 +30,9 @@ export const initialGrid = async function(animUtil: AnimUtil, pixelGrid: PixelGr
         }
         await animUtil.waitTime(10);
     }
-    await animUtil.waitTime(1000);
+    if (currentAnimMode === AnimMode.Automatic) {
+        await animUtil.waitTime(1000);
+    }
 }
 
 // Could move this onto the pixel grid but don't want to fill it up with every shape
@@ -60,8 +63,7 @@ export const pixelStart = async function name(
     
     setExplainText(BRESENHAM_INIT_1);
 
-    pixelCoords.addPixelCoord(COORD_1);
-    pixelCoords.addPixelCoord(COORD_2);
+    pixelCoords.addPixelCoords(COORD_1, COORD_2);
 
     await animUtil.waitTime(1000);
 

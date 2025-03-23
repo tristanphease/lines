@@ -40,8 +40,7 @@ export const comparisonBresenhamAntialiasLines = async function(animUtil: AnimUt
 
     const firstPoint = { x: 50, y: 50 };
     const secondPoint = { x: 350, y: 200, below: true };
-    pixelCoords.addPixelCoord(firstPoint);
-    pixelCoords.addPixelCoord(secondPoint);
+    pixelCoords.addPixelCoords(firstPoint, secondPoint);
 
     let pixelCount = 0;
     await bresenhamAnim(pixelGrid, firstPoint, secondPoint, async () => {
@@ -57,8 +56,7 @@ export const comparisonBresenhamAntialiasLines = async function(animUtil: AnimUt
     const secondPoint2: PixelCoord = addPoints(secondPoint, offsetPoint);
     secondPoint2.below = true;
 
-    pixelCoords.addPixelCoord(firstPoint2);
-    pixelCoords.addPixelCoord(secondPoint2);
+    pixelCoords.addPixelCoords(firstPoint2, secondPoint2);
 
     pixelCount = 0;
     await drawAntialiasLine(firstPoint2, secondPoint2, pixelGrid, async () => {

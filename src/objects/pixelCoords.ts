@@ -23,6 +23,12 @@ export default class PixelCoords implements AnimObject {
         this.pixelCoords.add(pixelCoord);
     }
 
+    addPixelCoords(...pixelCoords: Array<PixelCoord>) {
+        for (const pixelCoord of pixelCoords) {
+            this.addPixelCoord(pixelCoord);
+        }
+    }
+
     removePixelCoord(pixelCoord: PixelCoord) {
         this.pixelCoords.delete(pixelCoord);
     }

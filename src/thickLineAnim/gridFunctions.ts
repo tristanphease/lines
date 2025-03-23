@@ -1,10 +1,11 @@
-import { AnimUtil, Color, colorFromHex, PixelGrid } from "@trawby/trawby";
+import { AnimMode, AnimUtil, Color, colorFromHex, PixelGrid } from "@trawby/trawby";
 import { setExplainText } from "../explainText.ts";
 import PixelCoords from "../objects/pixelCoords.ts";
 import { bresenhamAnim, bresenhamMove } from "../bresenhamAnim/bresenham.ts";
 import { addPoints, multiplyPoint, normalisePoint, orthogonalPoint, Point, roundPointInteger, subtractPoints } from "../util/point.ts";
 import { thickBresenhamMove } from "./thickLine.ts";
 import { getTwoPoints } from "../util/helpers.ts";
+import { currentAnimMode } from "../mod.ts";
 
 /** Gets the perpendicular offset between the points by the amount */
 function offset(point: Point, diffPoint: Point, amount: number): Point {
@@ -36,8 +37,7 @@ export const initial = async function(animUtil: AnimUtil, pixelGrid: PixelGrid, 
     const point2 = COMMON_POINT_2;
 
     pixelCoords.fontSize = 4;
-    pixelCoords.addPixelCoord(point1);
-    pixelCoords.addPixelCoord(point2);
+    pixelCoords.addPixelCoords(point1, point2);
 
     const diffPoint = subtractPoints(point2, point1);
     const diffNormalisePoint = normalisePoint(diffPoint);
@@ -85,8 +85,7 @@ export const firstTry = async function(animUtil: AnimUtil, pixelGrid: PixelGrid,
     const point2 = COMMON_POINT_2;
 
     pixelCoords.fontSize = 4;
-    pixelCoords.addPixelCoord(point1);
-    pixelCoords.addPixelCoord(point2);
+    pixelCoords.addPixelCoords(point1, point2);
 
     const diffPoint = subtractPoints(point2, point1);
     const diffNormalisePoint = normalisePoint(diffPoint);
@@ -115,8 +114,9 @@ export const firstTry = async function(animUtil: AnimUtil, pixelGrid: PixelGrid,
     } */
 
     setExplainText(CONCLUSION_FIRST_TRY_TEXT);
-    await animUtil.waitTime(5000);
-
+    if (currentAnimMode === AnimMode.Automatic) {
+        await animUtil.waitTime(5000);
+    }
 }
 
 const SECOND_TEXT: string = `What we need to do is maintain the error in the first line and pass it through so that it 
@@ -134,8 +134,7 @@ export const secondThickLine = async function(animUtil: AnimUtil, pixelGrid: Pix
     const point2 = COMMON_POINT_2;
 
     pixelCoords.fontSize = 4;
-    pixelCoords.addPixelCoord(point1);
-    pixelCoords.addPixelCoord(point2);
+    pixelCoords.addPixelCoords(point1, point2);
 
     let pixelCount = 0;
     await thickBresenhamMove(point1, point2, thickness, async (point) => {
@@ -145,8 +144,10 @@ export const secondThickLine = async function(animUtil: AnimUtil, pixelGrid: Pix
         }
         pixelCount += 1;
     });
-
-    await animUtil.waitTime(1000);
+    
+    if (currentAnimMode === AnimMode.Automatic) {
+        await animUtil.waitTime(1000);
+    }
 }
 
 export const customThickLineAnim = async function(animUtil: AnimUtil, pixelGrid: PixelGrid, pixelCoords: PixelCoords) {
