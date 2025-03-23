@@ -43,9 +43,11 @@ export async function bresenhamMove(point1: Point, point2: Point, callback: bres
     const deltaXAbs = Math.abs(point2.x - point1.x);
     const deltaYAbs = Math.abs(point2.y - point1.y);
 
+    // The main axis is the one we're travelling further on
     const mainAxis = deltaXAbs >= deltaYAbs ? "x" : "y";
     const subAxis = mainAxis === "x" ? "y" : "x";
 
+    // Calculate some useful variables
     const deltaMainRaw = point2[mainAxis] - point1[mainAxis];
     const deltaSubRaw = point2[subAxis] - point1[subAxis];
     const deltaMain = Math.abs(deltaMainRaw);

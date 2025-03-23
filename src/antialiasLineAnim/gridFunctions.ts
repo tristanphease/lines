@@ -17,16 +17,8 @@ export const initialAnim = async function(animUtil: AnimUtil, pixelGrid: PixelGr
     const point1 = { x: 10, y: 10 };
     const point2 = { x: 60, y: 30, below: true };
 
-    /* drawAntialiasLine(point1, point2, pixelGrid, async (_point) => {
-        await animUtil.waitTime(1);
-    }); */
-
-    let pixelCount = 0;
     await drawAntialiasLine(point1, point2, pixelGrid, async (_point) => {
-        if (pixelCount % 3 == 0) {
-            await animUtil.waitTime(10);
-        }
-        pixelCount += 1;
+        await animUtil.waitTime(10);
     });
 }
 

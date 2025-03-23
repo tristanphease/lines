@@ -1,6 +1,6 @@
 # This workflow contains the deploy for the github pages for this project
 
-name: Deno
+name: Deploy
 
 on:
   push:
@@ -38,7 +38,9 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: './dist'
+          # upload whole repo, ideally would just be the output js file and index html file
+          # could output the index.html into dist and the mod.js into a sub dist folder?
+          path: '.'
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4

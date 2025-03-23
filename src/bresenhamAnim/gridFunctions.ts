@@ -65,7 +65,7 @@ export const pixelStart = async function name(
 
     pixelCoords.addPixelCoords(COORD_1, COORD_2);
 
-    await animUtil.waitTime(1000);
+    await animUtil.waitTime(4000);
 
     setExplainText(BRESENHAM_INIT_2);
     
@@ -84,6 +84,6 @@ export const customLineAnim = async function(animUtil: AnimUtil, pixelGrid: Pixe
     const [point1, point2] = await getTwoPoints(animUtil, pixelCoords);
 
     await bresenhamAnim(pixelGrid, point1, point2, async (_pointAdded: Point, _error: number) => {
-        await animUtil.waitTime(50);
+        await animUtil.waitTime(10);
     });
 }
