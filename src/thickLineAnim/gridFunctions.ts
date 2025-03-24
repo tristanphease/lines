@@ -63,8 +63,9 @@ export const initial = async function(animUtil: AnimUtil, pixelGrid: PixelGrid, 
 
     setExplainText(THIRD_INITIAL_TEXT);
 
-    await animUtil.waitTime(4000);
-
+    if (currentAnimMode === AnimMode.Automatic) {
+        await animUtil.waitTime(4000);
+    }
 }
 
 const FIRST_TRY_TEXT: string = "Let's try to implement that.";
@@ -155,7 +156,9 @@ export const customThickLineAnim = async function(animUtil: AnimUtil, pixelGrid:
     pixelGrid.clearAll(Color.WHITE);
     pixelCoords.fontSize = 12;
 
+    // animUtil.setZoomPoint(6, 500, 250);
     const [point1, point2] = await getTwoPoints(animUtil, pixelCoords);
+    // const [point1, point2] = [{x: 500, y: 235}, {x: 453, y: 267}];
 
     let pixelCount = 0;
     await thickBresenhamMove(point1, point2, COMMON_THICKNESS, async (point) => {

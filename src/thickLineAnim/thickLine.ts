@@ -1,6 +1,8 @@
-import { addPoints, multiplyPoint, normalisePoint, orthogonalPoint, Point, roundPointInteger, subtractPoints } from "../util/point.ts";
+import { addPoints, debugPointString, multiplyPoint, normalisePoint, orthogonalPoint, Point, roundPointInteger, subtractPoints } from "../util/point.ts";
 
 type CallbackFunction = (point: Point) => Promise<void>;
+
+const DEBUG: boolean = false;
 
 export async function thickBresenhamMove(point1: Point, point2: Point, thickness: number, callback: CallbackFunction) {
     // calculate points for thickness
@@ -30,21 +32,37 @@ export async function thickBresenhamMove(point1: Point, point2: Point, thickness
     let error = 0;
 
     const subMoveInfo = generateMoveInfo(point1, point2);
+    if (DEBUG) {
+        const mainMoveInfo = generateMoveInfo(startPoint1, endPoint1);
+        console.log("Main move info:", mainMoveInfo);
+        console.log("Sub move info:", subMoveInfo);
+    }
 
+    // if sub sign is same as main sign then we need a negative error since
+    // main line going diagonal will take it away from the direction of the sub line
+    // so need negative error to offset that
+    const errorSign = mainSign === subMoveInfo.subSign ? -1 : 1;
+    
     while ((mainPositive && currentMain <= endPoint1[mainAxis]) || (!mainPositive && currentMain >= endPoint1[mainAxis])) {
         const [currentPoint, currentPoint2] = calculatePoints(mainAxis, currentMain, currentSub, point1, point2);
-        // console.log(`*** OUTER: currentpoint: ${debugPointString(currentPoint)}, perror: ${perpendicularError}, error: ${error}`);
-        await bresenhamMove(currentPoint, currentPoint2, perpendicularError, subMoveInfo, callback);
+        if (DEBUG) {
+            console.log(`*** OUTER: currentpoint: ${debugPointString(currentPoint)}, perror: ${perpendicularError}, error: ${error}`);
+        }
+        
+        await bresenhamMove(currentPoint, currentPoint2, errorSign * perpendicularError, subMoveInfo, callback);
         if (error >= 0.5) {
             currentSub += subSign;
             error -= 1;
             if (perpendicularError >= 0.5) {
                 const [currentPoint, currentPoint2] = calculatePoints(mainAxis, currentMain, currentSub, point1, point2);
-                await bresenhamMove(currentPoint, currentPoint2, perpendicularError + subMoveInfo.deltaAmount - 1, subMoveInfo, callback);
+                const subError = perpendicularError + subMoveInfo.deltaAmount - 1;
+                await bresenhamMove(currentPoint, currentPoint2, errorSign * subError, subMoveInfo, callback);
                 perpendicularError -= 1;
             }
             perpendicularError += subMoveInfo.deltaAmount;
-            // console.log(`*** OUTER: diagonal`);
+            if (DEBUG) {
+                console.log(`*** OUTER: diagonal`);
+            }
         }
         error += deltaAmount;
         currentMain += mainSign;
@@ -70,12 +88,14 @@ async function bresenhamMove(point1: Point, point2: Point, error: number, moveIn
     
     let currentMain = point1[moveInfo.mainAxis];
     let currentSub = point1[moveInfo.subAxis];
-    error = -error;
+    // error = -error;
 
     while ((moveInfo.mainSign === 1 && currentMain <= point2[moveInfo.mainAxis]) || 
         (moveInfo.mainSign === -1 && currentMain >= point2[moveInfo.mainAxis])) {
         const currentPoint = getCurrentPoint(moveInfo.mainAxis, currentMain, currentSub);
-        // console.log(`INNER: currentpoint: ${debugPointString(currentPoint)}, error: ${error}`);
+        if (DEBUG) {
+            console.log(`INNER: currentpoint: ${debugPointString(currentPoint)}, error: ${error}`);
+        }
         if (error >= 0.5) {
             currentSub += moveInfo.subSign;
             error -= 1;
