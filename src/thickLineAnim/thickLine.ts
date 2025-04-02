@@ -28,10 +28,11 @@ export async function thickBresenhamMove(point1: Point, point2: Point, thickness
     let currentMain = startPoint1[mainAxis];
     let currentSub = startPoint1[subAxis];
     const deltaAmount = deltaSub / deltaMain;
-    let perpendicularError = 0;
-    let error = 0;
-
     const subMoveInfo = generateMoveInfo(point1, point2);
+    let perpendicularError = subMoveInfo.deltaAmount;
+    
+    let error = 0;
+    
     if (DEBUG) {
         const mainMoveInfo = generateMoveInfo(startPoint1, endPoint1);
         console.log("Main move info:", mainMoveInfo);
